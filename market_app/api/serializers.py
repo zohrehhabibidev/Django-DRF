@@ -2,10 +2,22 @@ from rest_framework import serializers
 from market_app.models import Market
 
 
+def validate_no_x(value):
+    errors = []
+    if 'X' in value:
+        errors. append('no X in Filed')
+        if 'Y' in value:
+            errors.append('no Y in Field')
+    if errors:
+        raise serializers.ValidationError(errors)
+    return value
+
+
 class MarketSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=255)
-    location = serializers.CharField(max_length=255)
+    location = serializers.CharField(
+        max_length=255, validators=[validate_no_x])
     description = serializers.CharField(max_length=255)
     net_worth = serializers.DecimalField(max_digits=100, decimal_places=2)
 
