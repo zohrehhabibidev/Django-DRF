@@ -80,5 +80,23 @@ class ProductDetailSerializer(serializers.Serializer):
     seller = serializers.StringRelatedField(
         read_only=True)
 
-# class ProductCreateSerializer(serializers.Serializer):
-#     pass
+
+class ProductCreateSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField()
+    price = serializers.DecimalField(max_digits=50, decimal_places=2)
+    market = serializers.IntegerField()
+    seller = serializers.IntegerField()
+
+    # def validate_market(self, value):
+    #     market = Market.objects.filter(id__in=value)
+    #     return value
+
+    # def validate_seller(self, value):
+    #     seller = Seller.objects.filter(id__in=value)
+
+    #     if len(seller) != len(value):
+    #         raise serializers.ValidationError(
+    #             'One or more market IDs not found')
+    #     return value
