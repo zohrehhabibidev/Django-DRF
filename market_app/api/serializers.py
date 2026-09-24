@@ -89,18 +89,6 @@ class ProductCreateSerializer(serializers.Serializer):
     market = serializers.IntegerField()
     seller = serializers.IntegerField()
 
-    # def validate_market(self, value):
-    #     market = Market.objects.filter(id__in=value)
-    #     return value
-
-    # def validate_seller(self, value):
-    #     seller = Seller.objects.filter(id__in=value)
-
-    #     if len(seller) != len(value):
-    #         raise serializers.ValidationError(
-    #             'One or more market IDs not found')
-    #     return value
-
     def create(self, validated_data):
         return Product.objects.create(
             name=validated_data["name"],
@@ -109,3 +97,21 @@ class ProductCreateSerializer(serializers.Serializer):
             market=Market.objects.get(pk=validated_data["market"]),
             seller=Seller.objects.get(pk=validated_data["seller"])
         )
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get(
+            'description', instance.description)
+        instance.price = validated_data.get('price', instance.price)
+
+        if 'market' in validated_data:
+            instance.market = Market.objects.get(
+                pk=validated_data["market"]
+            )
+        if 'seller' in validated_data:
+            instance.seller = Seller.objects.get(
+                pk=validated_data["seller"]
+            )
+
+        instance.save()
+        return instance

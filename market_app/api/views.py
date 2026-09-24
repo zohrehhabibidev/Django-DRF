@@ -185,3 +185,59 @@ def product_view(request):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+@api_view(['GET', 'DELETE', 'PUT'])
+def product_single_view(request, pk):
+    if request.method == 'GET':
+        try:
+            pruduct = Product.objects.get(pk=pk)
+            serializer = ProductDetailSerializer(pruduct)
+            return Response(serializer.data)
+
+        except Product.DoesNotExist:
+            return Response(
+                {'message': 'Product not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    if request.method == 'PUT':
+        try:
+            pruduct = Product.objects.get(pk=pk)
+
+            serializer = ProductCreateSerializer(
+                pruduct,
+                data=request.data,
+                partial=True
+            )
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_200_OK
+                )
+
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except Product.DoesNotExist:
+            return Response(
+                {'message': 'Pruduct not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    if request.method == 'DELETE':
+        try:
+            product = Product.objects.get(pk=pk)
+            product.delete()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except Product.DoesNotExist:
+            return Response(
+                {'message': 'Product not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
