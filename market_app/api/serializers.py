@@ -41,6 +41,13 @@ class SellerDetailSerializer(serializers.Serializer):
     contact_info = serializers.CharField()
     markets = MarketSerializer(many=True, read_only=True)
 
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.contact_info = validated_data.get(
+            'contact_info', instance.contact_info)
+        instance.save()
+        return instance
+
 
 class SellerCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
