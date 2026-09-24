@@ -1,5 +1,5 @@
-from market_app.models import Market, Seller
-from .serializers import MarketSerializer, SellerDetailSerializer, SellerCreateSerializer
+from market_app.models import Market, Seller, Product
+from .serializers import MarketSerializer, SellerDetailSerializer, SellerCreateSerializer, ProductDetailSerializer, ProductCreateSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -163,3 +163,25 @@ def seller_single_view(request, pk):
                 {'message': 'Market not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+@api_view(['GET', 'POST'])
+def product_view(request):
+    if request.method == 'GET':
+        products = Product.objects.all()
+        serializer = ProductDetailSerializer(products, many=True)
+        return Response(serializer.data)
+
+    if request.method == 'POST':
+        serializer = ProductCreateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )

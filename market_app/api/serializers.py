@@ -100,3 +100,12 @@ class ProductCreateSerializer(serializers.Serializer):
     #         raise serializers.ValidationError(
     #             'One or more market IDs not found')
     #     return value
+
+    def create(self, validated_data):
+        return Product.objects.create(
+            name=validated_data["name"],
+            description=validated_data["description"],
+            price=validated_data["price"],
+            market=Market.objects.get(pk=validated_data["market"]),
+            seller=Seller.objects.get(pk=validated_data["seller"])
+        )
