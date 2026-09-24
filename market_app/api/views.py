@@ -194,7 +194,6 @@ def product_single_view(request, pk):
             pruduct = Product.objects.get(pk=pk)
             serializer = ProductDetailSerializer(pruduct)
             return Response(serializer.data)
-
         except Product.DoesNotExist:
             return Response(
                 {'message': 'Product not found'},
