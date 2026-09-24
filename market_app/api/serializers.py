@@ -35,40 +35,50 @@ class MarketSerializer(serializers.Serializer):
         return instance
 
 
-class SellerDetailSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(max_length=255)
-    contact_info = serializers.CharField()
-    markets = MarketSerializer(many=True, read_only=True)
+# class SellerDetailSerializer(serializers.Serializer):
+#     id = serializers.IntegerField(read_only=True)
+#     name = serializers.CharField(max_length=255)
+#     contact_info = serializers.CharField()
+#     markets = MarketSerializer(many=True, read_only=True)
 
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.contact_info = validated_data.get(
-            'contact_info', instance.contact_info)
-        instance.save()
-        return instance
+#     def update(self, instance, validated_data):
+#         instance.name = validated_data.get('name', instance.name)
+#         instance.contact_info = validated_data.get(
+#             'contact_info', instance.contact_info)
+#         instance.save()
+#         return instance
 
 
-class SellerCreateSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=255)
-    contact_info = serializers.CharField()
-    markets = serializers.ListField(
-        child=serializers.IntegerField(), write_only=True)
+# class SellerCreateSerializer(serializers.Serializer):
+#     name = serializers.CharField(max_length=255)
+#     contact_info = serializers.CharField()
+#     markets = serializers.ListField(
+#         child=serializers.IntegerField(), write_only=True)
 
-    def validate_markets(self, value):
-        markets = Market.objects.filter(id__in=value)
+#     def validate_markets(self, value):
+#         markets = Market.objects.filter(id__in=value)
 
-        if len(markets) != len(value):
-            raise serializers.ValidationError(
-                'One or more market IDs not found')
-        return value
+#         if len(markets) != len(value):
+#             raise serializers.ValidationError(
+#                 'One or more market IDs not found')
+#         return value
 
-    def create(self, validated_data):
-        market_ids = validated_data.pop('markets')
-        seller = Seller.objects.create(**validated_data)
-        markets = Market.objects.filter(id__in=market_ids)
-        seller.markets.set(markets)
-        return seller
+#     def create(self, validated_data):
+#         market_ids = validated_data.pop('markets')
+#         seller = Seller.objects.create(**validated_data)
+#         markets = Market.objects.filter(id__in=market_ids)
+#         seller.markets.set(markets)
+#         return seller
+
+class SellerSerializer(serializers.ModelSerializer):
+    markets = serializers.PrimaryKeyRelatedField(
+        queryset=Market.objects.all(),
+        many=True
+    )
+
+    class Meta:
+        model = Seller
+        fields = '__all__'
 
 
 class ProductDetailSerializer(serializers.Serializer):

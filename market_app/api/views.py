@@ -1,5 +1,5 @@
 from market_app.models import Market, Seller, Product
-from .serializers import MarketSerializer, SellerDetailSerializer, SellerCreateSerializer, ProductDetailSerializer, ProductCreateSerializer
+from .serializers import MarketSerializer, SellerSerializer, ProductDetailSerializer, ProductCreateSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -89,20 +89,20 @@ def market_single_view(request, pk):
             )
 
 
-@api_view(['GET', 'POST'])
-def sellers_view(request):
-    if request.method == 'GET':
-        sellers = Seller.objects.all()
-        serializer = SellerDetailSerializer(sellers, many=True)
-        return Response(serializer.data)
+# @api_view(['GET', 'POST'])
+# def sellers_view(request):
+#     if request.method == 'GET':
+#         sellers = Seller.objects.all()
+#         serializer = SellerDetailSerializer(sellers, many=True)
+#         return Response(serializer.data)
 
-    if request.method == 'POST':
-        serializer = SellerCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+#     if request.method == 'POST':
+#         serializer = SellerCreateSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         else:
+#             return Response(serializer.errors)
 
 
 @api_view(['GET', 'DELETE', 'PUT'])
@@ -111,12 +111,12 @@ def seller_single_view(request, pk):
     if request.method == 'GET':
         try:
             seller = Seller.objects.get(pk=pk)
-            serializer = SellerDetailSerializer(seller)
+            serializer = SellerSerializer(seller)
             return Response(serializer.data)
 
         except Seller.DoesNotExist:
             return Response(
-                {'message': 'Market not found'},
+                {'message': 'Seller  not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -124,7 +124,7 @@ def seller_single_view(request, pk):
         try:
             seller = Seller.objects.get(pk=pk)
 
-            serializer = SellerDetailSerializer(
+            serializer = SellerSerializer(
                 seller,
                 data=request.data,
                 partial=True
@@ -144,7 +144,7 @@ def seller_single_view(request, pk):
 
         except Seller.DoesNotExist:
             return Response(
-                {'message': 'Market not found'},
+                {'message': 'Seller  not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -154,13 +154,13 @@ def seller_single_view(request, pk):
             seller.delete()
 
             return Response(
-                {'message': 'Market deleted successfully'},
+                {'message': 'Seller  deleted successfully'},
                 status=status.HTTP_204_NO_CONTENT
             )
 
         except Seller.DoesNotExist:
             return Response(
-                {'message': 'Market not found'},
+                {'message': 'Seller  not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
