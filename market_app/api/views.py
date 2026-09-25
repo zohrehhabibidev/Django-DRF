@@ -1,5 +1,5 @@
 from market_app.models import Market, Seller, Product
-from .serializers import MarketSerializer, SellerSerializer, ProductDetailSerializer, ProductCreateSerializer, MarketHyperSerializer
+from .serializers import MarketSerializer, SellerSerializer, ProductDetailSerializer, ProductCreateSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -10,14 +10,15 @@ def market_view(request):
 
     if request.method == 'GET':
         markets = Market.objects.all()
-        serializer = MarketHyperSerializer(
+        serializer = MarketSerializer(
             markets,
             many=True,
-            context={'request': request})
+            context={'request': request},
+            fields=['id', 'name'])
         return Response(serializer.data)
 
     if request.method == 'POST':
-        serializer = MarketHyperSerializer(data=request.data)
+        serializer = MarketSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()

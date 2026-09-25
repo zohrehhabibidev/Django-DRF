@@ -26,6 +26,18 @@ class MarketSerializer(serializers.HyperlinkedModelSerializer):
         view_name='seller-single'
     )
 
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            allowed = set(fields)
+            existing = set(self.fields)
+
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
     class Meta:
         model = Market
         fields = '__all__'
@@ -44,12 +56,12 @@ class MarketSerializer(serializers.HyperlinkedModelSerializer):
         return instance
 
 
-class MarketHyperSerializer(MarketSerializer):
-    sellers = None
+# class MarketHyperSerializer(MarketSerializer):
+#     sellers = None
 
-    class Meta:
-        model = Market
-        fields = '__all__'
+#     class Meta:
+#         model = Market
+#         fields = '__all__'
 
 # class SellerDetailSerializer(serializers.Serializer):
 #     id = serializers.IntegerField(read_only=True)
