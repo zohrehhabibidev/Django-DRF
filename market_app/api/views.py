@@ -12,6 +12,10 @@ class MarketsView(
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
 
+    def get_serializer(self, *args, **kwargs):
+        kwargs['fields'] = ['id', 'name']
+        return super().get_serializer(*args, **kwargs)
+
     def get(self, request, *args, ** kwargs):
         return self.list(request, *args, ** kwargs)
 
