@@ -20,6 +20,11 @@ class MarketSerializer(serializers.Serializer):
         max_length=255, validators=[validate_no_x])
     description = serializers.CharField(max_length=255)
     net_worth = serializers.DecimalField(max_digits=100, decimal_places=2)
+    sellers = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='seller-single'
+    )
 
     def create(self, validated_data):
         return Market.objects.create(**validated_data)

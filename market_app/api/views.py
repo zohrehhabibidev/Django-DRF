@@ -10,7 +10,10 @@ def market_view(request):
 
     if request.method == 'GET':
         markets = Market.objects.all()
-        serializer = MarketSerializer(markets, many=True)
+        serializer = MarketSerializer(
+            markets,
+            many=True,
+            context={'request': request})
         return Response(serializer.data)
 
     if request.method == 'POST':
