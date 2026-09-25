@@ -12,6 +12,15 @@ class MarketsView(generics.ListCreateAPIView):
         return super().get_serializer(*args, **kwargs)
 
 
+class SellerOfMarketView(generics.ListAPIView):
+    serializer_class = SellerSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        market = Market.objects.get(pk=pk)
+        return market.sellers.all()
+
+
 class MarketDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
