@@ -44,6 +44,13 @@ class MarketSerializer(serializers.HyperlinkedModelSerializer):
         return instance
 
 
+class MarketHyperSerializer(MarketSerializer):
+    sellers = None
+
+    class Meta:
+        model = Market
+        fields = '__all__'
+
 # class SellerDetailSerializer(serializers.Serializer):
 #     id = serializers.IntegerField(read_only=True)
 #     name = serializers.CharField(max_length=255)
