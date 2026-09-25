@@ -2,7 +2,21 @@ from rest_framework import serializers
 from market_app.models import Market, Seller, Product
 
 
-class MarketSerializer(serializers.HyperlinkedModelSerializer):
+class DynamicFieldsModelSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            allowed = set(fields)
+            existing = set(self.fields)
+
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
+
+class MarketSerializer(DynamicFieldsModelSerializer):
 
     sellers = serializers.HyperlinkedRelatedField(
         many=True,
@@ -10,65 +24,29 @@ class MarketSerializer(serializers.HyperlinkedModelSerializer):
         view_name='seller-single'
     )
 
-    def __init__(self, *args, **kwargs):
-        fields = kwargs.pop('fields', None)
-
-        super().__init__(*args, **kwargs)
-
-        if fields is not None:
-            allowed = set(fields)
-            existing = set(self.fields)
-
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
-
     class Meta:
         model = Market
         fields = '__all__'
 
 
-class SellerSerializer(serializers.ModelSerializer):
+class SellerSerializer(DynamicFieldsModelSerializer):
     markets = serializers.PrimaryKeyRelatedField(
         queryset=Market.objects.all(),
         many=True
     )
-
-    def __init__(self, *args, **kwargs):
-        fields = kwargs.pop('fields', None)
-
-        super().__init__(*args, **kwargs)
-
-        if fields is not None:
-            allowed = set(fields)
-            existing = set(self.fields)
-
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
 
     class Meta:
         model = Seller
         fields = '__all__'
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductSerializer(DynamicFieldsModelSerializer):
     market = serializers.PrimaryKeyRelatedField(
         queryset=Market.objects.all()
     )
     seller = serializers.PrimaryKeyRelatedField(
         queryset=Seller.objects.all()
     )
-
-    def __init__(self, *args, **kwargs):
-        fields = kwargs.pop('fields', None)
-
-        super().__init__(*args, **kwargs)
-
-        if fields is not None:
-            allowed = set(fields)
-            existing = set(self.fields)
-
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
 
     class Meta:
         model = Product

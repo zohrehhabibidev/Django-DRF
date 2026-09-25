@@ -4,7 +4,10 @@ from rest_framework import generics
 from rest_framework import mixins
 
 
-class MarketsView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class MarketsView(
+        mixins.ListModelMixin,
+        mixins.CreateModelMixin,
+        generics.GenericAPIView):
 
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
