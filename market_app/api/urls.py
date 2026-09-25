@@ -1,12 +1,17 @@
 from django.urls import path
-from .views import market_view, market_single_view, seller_single_view, product_single_view, product_view
-
+from .views import (
+    MarketsView,
+    MarketDetailView,
+    SellerDetailView,
+    ProductsView,
+    ProductDetailView,
+)
 urlpatterns = [
-    path('market/', market_view),
-    path('market/<int:pk>/', market_single_view, name='market-detail'),
-    # path('seller/', sellers_view),
-    path('seller/<int:pk>/', seller_single_view, name='seller-single'),
+    path('market/', MarketsView.as_view()),
+    path('market/<int:pk>/', MarketDetailView.as_view(), name='market-detail'),
 
-    path('product/', product_view),
-    path('product/<int:pk>/', product_single_view),
+    path('seller/<int:pk>/', SellerDetailView.as_view(), name='seller-single'),
+
+    path('product/', ProductsView.as_view()),
+    path('product/<int:pk>/', ProductDetailView.as_view()),
 ]
