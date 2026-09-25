@@ -13,18 +13,22 @@ def validate_no_x(value):
     return value
 
 
-class MarketSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(max_length=255)
-    location = serializers.CharField(
-        max_length=255, validators=[validate_no_x])
-    description = serializers.CharField(max_length=255)
-    net_worth = serializers.DecimalField(max_digits=100, decimal_places=2)
+class MarketSerializer(serializers.HyperlinkedModelSerializer):
+    # id = serializers.IntegerField(read_only=True)
+    # name = serializers.CharField(max_length=255)
+    # location = serializers.CharField(
+    #     max_length=255, validators=[validate_no_x])
+    # description = serializers.CharField(max_length=255)
+    # net_worth = serializers.DecimalField(max_digits=100, decimal_places=2)
     sellers = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
         view_name='seller-single'
     )
+
+    class Meta:
+        model = Market
+        fields = '__all__'
 
     def create(self, validated_data):
         return Market.objects.create(**validated_data)

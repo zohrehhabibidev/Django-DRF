@@ -38,7 +38,7 @@ def market_single_view(request, pk):
     if request.method == 'GET':
         try:
             market = Market.objects.get(pk=pk)
-            serializer = MarketSerializer(market)
+            serializer = MarketSerializer(market, context={'request': request})
             return Response(serializer.data)
 
         except Market.DoesNotExist:
